@@ -1,0 +1,79 @@
+[{"stream_name":"stderr","time":6.636698011,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.6367424889999995,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.63674913,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.6367534280000005,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.202074972,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.202102836,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.202107835,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.202111482,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.210795259,"data":"weights dataset: /kaggle/input/datasets/dariushafshar/solar-filament-unet-weights\n"}
+,{"stream_name":"stdout","time":10.210825574,"data":"competition test images: /kaggle/input/competitions/filament-segmentation-2026/MAGFiLO_1.0_Kaggle_2026/test/test_images\n"}
+,{"stream_name":"stdout","time":25.589350887,"data":"python 3.13.16 | torch 2.11.0+cu130 | timm 1.0.30 | segmentation_models_pytorch 0.5.0 | numpy 2.1.3 | pandas 2.3.3\n"}
+,{"stream_name":"stdout","time":25.590228893,"data":"GPUs: ['Tesla T4', 'Tesla T4']\n"}
+,{"stream_name":"stdout","time":25.641646288,"data":"10 models = 5 folds x 2 encoders ['resnet34', 'tu-tf_efficientnetv2_s']\n"}
+,{"stream_name":"stdout","time":25.641665126,"data":"keep rule: {'t_lo': 0.35, 't_hi': 0.99, 'min_area': 200, 'min_meanp': 0.85}\n"}
+,{"stream_name":"stdout","time":25.641670205,"data":"TTA views: 8 | image size: 2048 x 2048 | normalisation disk radius: 950 px | each model's map stored as round(p x 255)\n"}
+,{"stream_name":"stdout","time":30.182315106,"data":"180 test images of 2048 x 2048, 0.75 GB in memory\n"}
+,{"stream_name":"stdout","time":30.182354776,"data":"disk mean of pixel/255 from 0.438 to 0.492, disk SD from 0.076 to 0.169\n"}
+,{"stream_name":"stdout","time":1177.549528664,"data":"unet_tu-tf_efficientnetv2_s_fold1.pt   cuda:1  sha256 matches the receipt, 180 images in 273 s\n"}
+,{"stream_name":"stdout","time":1177.549582733,"data":"unet_tu-tf_efficientnetv2_s_fold0.pt   cuda:0  sha256 matches the receipt, 180 images in 289 s\n"}
+,{"stream_name":"stdout","time":1177.549587205,"data":"unet_tu-tf_efficientnetv2_s_fold2.pt   cuda:1  sha256 matches the receipt, 180 images in 261 s\n"}
+,{"stream_name":"stdout","time":1177.549590352,"data":"unet_tu-tf_efficientnetv2_s_fold3.pt   cuda:0  sha256 matches the receipt, 180 images in 276 s\n"}
+,{"stream_name":"stdout","time":1177.549593401,"data":"unet_resnet34_fold0.pt                 cuda:0  sha256 matches the receipt, 180 images in 185 s\n"}
+,{"stream_name":"stdout","time":1177.549596406,"data":"unet_tu-tf_efficientnetv2_s_fold4.pt   cuda:1  sha256 matches the receipt, 180 images in 262 s\n"}
+,{"stream_name":"stdout","time":1177.549599717,"data":"unet_resnet34_fold1.pt                 cuda:0  sha256 matches the receipt, 180 images in 179 s\n"}
+,{"stream_name":"stdout","time":1177.549602721,"data":"unet_resnet34_fold2.pt                 cuda:1  sha256 matches the receipt, 180 images in 180 s\n"}
+,{"stream_name":"stdout","time":1177.5496056,"data":"unet_resnet34_fold3.pt                 cuda:0  sha256 matches the receipt, 180 images in 176 s\n"}
+,{"stream_name":"stdout","time":1177.54961489,"data":"unet_resnet34_fold4.pt                 cuda:1  sha256 matches the receipt, 180 images in 171 s\n"}
+,{"stream_name":"stdout","time":1181.254420364,"data":"10 models x 180 images on 2 device(s) in 19.2 min\n"}
+,{"stream_name":"stdout","time":1211.464576728,"data":"1177 filaments on 177 of 180 images, 6.54 per test image, written to /kaggle/working/submission.csv in 30 s\n"}
+,{"stream_name":"stdout","time":1240.3635964,"data":"14 of 14 checks pass:\n"}
+,{"stream_name":"stdout","time":1240.363655868,"data":"  header_ok                  True\n"}
+,{"stream_name":"stdout","time":1240.363661295,"data":"  no_quotes_in_file          True\n"}
+,{"stream_name":"stdout","time":1240.363664865,"data":"  ascii_only                 True\n"}
+,{"stream_name":"stdout","time":1240.363668306,"data":"  ids_match_pattern          True\n"}
+,{"stream_name":"stdout","time":1240.363671652,"data":"  all_stems_in_test_set      True\n"}
+,{"stream_name":"stdout","time":1240.363675166,"data":"  stems_without_underscore   True\n"}
+,{"stream_name":"stdout","time":1240.363678494,"data":"  ids_unique                 True\n"}
+,{"stream_name":"stdout","time":1240.363681781,"data":"  rle_charset_ok             True\n"}
+,{"stream_name":"stdout","time":1240.36368504,"data":"  decode_2048_ok             True\n"}
+,{"stream_name":"stdout","time":1240.36368832,"data":"  roundtrip_identical        True\n"}
+,{"stream_name":"stdout","time":1240.363691633,"data":"  no_empty_masks             True\n"}
+,{"stream_name":"stdout","time":1240.363694909,"data":"  pixel_disjoint_dense       True\n"}
+,{"stream_name":"stdout","time":1240.363698163,"data":"  pixel_disjoint_rle_iou     True\n"}
+,{"stream_name":"stdout","time":1240.363701784,"data":"  pandas_reread_identical    True\n"}
+,{"stream_name":"stdout","time":1240.363705093,"data":"complete test set: True (180 of 180 images)\n"}
+,{"stream_name":"stdout","time":1240.363708497,"data":"this run : 1177 rows, 177 images with rows, sha256 080006aaa94033a6\n"}
+,{"stream_name":"stdout","time":1240.363711885,"data":"submitted: 1177 rows, 177 images with rows, sha256 eb87c29dfb233d3d\n"}
+,{"stream_name":"stdout","time":1240.363715271,"data":"byte-identical to the file I submitted: False\n"}
+,{"stream_name":"stdout","time":1240.387690121,"data":"models                   nested OOF PQ  public  PQ at r = 0.77\n"}
+,{"stream_name":"stdout","time":1240.387717438,"data":"5 x ResNet34                    0.4299    0.37          0.3702\n"}
+,{"stream_name":"stdout","time":1240.387727298,"data":"5 x EfficientNetV2-S            0.4461    0.39          0.3907\n"}
+,{"stream_name":"stdout","time":1240.387730621,"data":"all 10 (this notebook)          0.4502    0.39          0.3945\n"}
+,{"stream_name":"stdout","time":1240.387734173,"data":"gap between nested OOF PQ and public: 0.06, 0.06, 0.06\n"}
+,{"stream_name":"stdout","time":1240.387737267,"data":"\n"}
+,{"stream_name":"stdout","time":1240.387740254,"data":"r that turns my first model's OOF counts into a score shown as 0.37 (0.365 to 0.375): 0.752 to 0.787 (point fit 0.77)\n"}
+,{"stream_name":"stdout","time":1240.387743444,"data":"predicted public for 5 x EfficientNetV2-S: 0.386 to 0.395, shown as 0.39 or 0.40; actual 0.39\n"}
+,{"stream_name":"stdout","time":1240.38774691,"data":"predicted public for all 10 (this notebook): 0.389 to 0.399, shown as 0.39 or 0.40; actual 0.39\n"}
+,{"stream_name":"stdout","time":1240.387750002,"data":"\n"}
+,{"stream_name":"stdout","time":1240.387753028,"data":"a training annotator outlines 7.10 filaments per image on average (707 images, 1,154 annotator-sets); at r = 0.77 a test annotator would outline about 5.47\n"}
+,{"stream_name":"stdout","time":1240.387756268,"data":"the models predict 6.85 filaments per training image out-of-fold and 6.54 per test image in this run\n"}
+,{"stream_name":"stdout","time":1240.387768137,"data":"for scale: one expert scored against another gets PQ 0.3399 (0.34) on the 296 training images with two or three annotators\n"}
+,{"stream_name":"stdout","time":1240.387770951,"data":"this notebook's models: nested OOF PQ 0.45, public 0.39, PQ' 0.39\n"}
+,{"stream_name":"stdout","time":1241.135049645,"data":"rule                                t_lo   t_hi  area  mean  OOF PQ  PQ at r  per test image\n"}
+,{"stream_name":"stdout","time":1247.690829092,"data":"KEEP (this notebook)                0.35   0.99   200  0.85  0.4523   0.3945            6.54\n"}
+,{"stream_name":"stdout","time":1253.732254957,"data":"my first model's rule               0.15   0.97   250  0.70  0.4414   0.3835            7.03\n"}
+,{"stream_name":"stdout","time":1253.732310493,"data":"the EfficientNetV2-S rule           0.35  0.995     0  0.85  0.4487   0.3946            6.07\n"}
+,{"stream_name":"stdout","time":1253.732465841,"data":"loose: peak \u003e 0.5, no mean filter   0.35    0.5   250  0.00  0.4176   0.3570            9.67\n"}
+,{"stream_name":"stdout","time":1253.732483706,"data":"\n"}
+,{"stream_name":"stdout","time":1253.732489342,"data":"33,880 rules in the grid. Best by OOF PQ: 0.4523. Best by PQ at r = 0.77: 0.3946 (t_lo 0.35, t_hi 0.995, area 0, mean 0.85)\n"}
+,{"stream_name":"stdout","time":1253.755430766,"data":"total run time 20.7 min; output: ['__notebook__.ipynb', 'submission.csv']\n"}
+,{"stream_name":"stderr","time":1259.466178543,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1259.466225073,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1259.623401653,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1259.62342756,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1260.42344633,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":1260.507873165,"data":"[NbConvertApp] Writing 43895 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":1263.156644721,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1263.758048535,"data":"[NbConvertApp] Writing 412397 bytes to __results__.html\n"}
+]
