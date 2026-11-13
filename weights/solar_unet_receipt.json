@@ -1,0 +1,362 @@
+{
+ "what": "Ten U-Net fold models for the Solar Filament Segmentation Challenge 2026 and the numbers behind them. Every value here was printed by the training or inference run named next to it.",
+ "competition": "filament-segmentation-2026",
+ "ensemble": {
+  "models": [
+   {
+    "file": "unet_tu-tf_efficientnetv2_s_fold0.pt",
+    "family": "efficientnetv2_s",
+    "encoder": "tu-tf_efficientnetv2_s",
+    "fold": 0,
+    "trained_in": "v5",
+    "bytes": 89325371,
+    "sha256": "ce20a9a6adfba193cf8a7dc663b417d12faced974d2270a4598acf6056ce449f"
+   },
+   {
+    "file": "unet_tu-tf_efficientnetv2_s_fold1.pt",
+    "family": "efficientnetv2_s",
+    "encoder": "tu-tf_efficientnetv2_s",
+    "fold": 1,
+    "trained_in": "v5",
+    "bytes": 89325371,
+    "sha256": "801f1e9bae5726b9cb48d2e1c0780b4c3a10fffdeea6b1ba46bc9a154577c1e1"
+   },
+   {
+    "file": "unet_tu-tf_efficientnetv2_s_fold2.pt",
+    "family": "efficientnetv2_s",
+    "encoder": "tu-tf_efficientnetv2_s",
+    "fold": 2,
+    "trained_in": "v5",
+    "bytes": 89325371,
+    "sha256": "a0cbc4a19d07110dd64815ef72fb37387c2335805f6122205a6c7a984d16b2fd"
+   },
+   {
+    "file": "unet_tu-tf_efficientnetv2_s_fold3.pt",
+    "family": "efficientnetv2_s",
+    "encoder": "tu-tf_efficientnetv2_s",
+    "fold": 3,
+    "trained_in": "v5",
+    "bytes": 89325371,
+    "sha256": "3ead5c1278de4a2b8b5059e11fa12b1faae10068d1a968a9c7a384406baba74f"
+   },
+   {
+    "file": "unet_tu-tf_efficientnetv2_s_fold4.pt",
+    "family": "efficientnetv2_s",
+    "encoder": "tu-tf_efficientnetv2_s",
+    "fold": 4,
+    "trained_in": "v5",
+    "bytes": 89325371,
+    "sha256": "d33b80d2b4d62571a42287bddd89a0bac2257f3512e40f3eadcd2de09453138b"
+   },
+   {
+    "file": "unet_resnet34_fold0.pt",
+    "family": "resnet34",
+    "encoder": "resnet34",
+    "fold": 0,
+    "trained_in": "v3",
+    "bytes": 97897763,
+    "sha256": "8cae430cf6ce34b27f129830aa193006e23ea8219b39fad482b9413c0eba9c46"
+   },
+   {
+    "file": "unet_resnet34_fold1.pt",
+    "family": "resnet34",
+    "encoder": "resnet34",
+    "fold": 1,
+    "trained_in": "v3",
+    "bytes": 97897763,
+    "sha256": "716510c722bc1bcb8a2de964f3bb306e6ec454b51a113d9f6f39e58cb0c95c11"
+   },
+   {
+    "file": "unet_resnet34_fold2.pt",
+    "family": "resnet34",
+    "encoder": "resnet34",
+    "fold": 2,
+    "trained_in": "v3",
+    "bytes": 97897763,
+    "sha256": "5fd99479706aafffa79fc5c2d9a1992d63cc8e94e2be87c47bbc535174f6ead9"
+   },
+   {
+    "file": "unet_resnet34_fold3.pt",
+    "family": "resnet34",
+    "encoder": "resnet34",
+    "fold": 3,
+    "trained_in": "v3",
+    "bytes": 97897763,
+    "sha256": "ce7d74cb1d0c3e20c2501bc6bd4a55d050cabef2391940ee5603112deb4e5007"
+   },
+   {
+    "file": "unet_resnet34_fold4.pt",
+    "family": "resnet34",
+    "encoder": "resnet34",
+    "fold": 4,
+    "trained_in": "v3",
+    "bytes": 97897763,
+    "sha256": "ef075c73fafa4aa3507e70ee14b49eb13897daf3a329e49c1a937bd65b22d27a"
+   }
+  ],
+  "keep_rule": {
+   "t_lo": 0.35,
+   "t_hi": 0.99,
+   "min_area": 200,
+   "min_meanp": 0.85,
+   "connectivity": 8,
+   "rule": "regions of p > t_lo (8-connected) kept if max p > t_hi, area >= min_area px and mean p >= min_meanp; thresholds compared on the uint8 map as p*255 rounded"
+  },
+  "inference": {
+   "tta_views": 8,
+   "views_per_forward_pass": 4,
+   "amp": "float16 autocast on CUDA",
+   "image": "full 2048 x 2048 at native resolution, 1 channel",
+   "normalisation": "(pixel/255 - mean) / std with the mean and std of pixel/255 inside a radius of 950 px around (1023.5, 1023.5), per image",
+   "quantisation": "each model's TTA-mean probability is rounded to uint8 (p*255); the 10 uint8 maps are averaged and rounded again"
+  }
+ },
+ "runs": {
+  "v3": {
+   "kernel": "dariushafshar/solar-filament-unet-baseline (private) version 3",
+   "models": "5 x U-Net ResNet34",
+   "keep_rule": {
+    "t_lo": 0.15,
+    "t_hi": 0.97,
+    "min_area": 250,
+    "min_meanp": 0.7
+   },
+   "oof": {
+    "nested_cv_pq": 0.4298688949670309,
+    "pq_at_keep_rule": 0.4298688949670309,
+    "sum_iou": 3831.4214608411457,
+    "tp": 5672,
+    "fp": 3955,
+    "fn": 2527,
+    "n_pred": 5900,
+    "pred_per_image": 8.345120226308346,
+    "per_fold_pq": {
+     "0": 0.42869836764372987,
+     "1": 0.41861556450731496,
+     "2": 0.4458780355635332,
+     "3": 0.43617014770343016,
+     "4": 0.42026688497278725
+    }
+   },
+   "submission_file": {
+    "sha256": "cfc60246dd69459b408e2f4bdf32157d457c24bc524143dd65370af288d009fe",
+    "rows": 1432,
+    "images_with_rows": 178,
+    "bytes": 394469
+   },
+   "submission_id": 57105357,
+   "date_utc": "2026-10-12 11:12",
+   "public_lb": 0.37,
+   "environment": {
+    "python": "3.13.15",
+    "torch": "2.11.0+cu128",
+    "timm": "1.0.29",
+    "segmentation_models_pytorch": "0.5.0"
+   }
+  },
+  "v5": {
+   "kernel": "dariushafshar/solar-filament-unet-baseline (private) version 5",
+   "models": "5 x U-Net EfficientNetV2-S",
+   "keep_rule": {
+    "t_lo": 0.35,
+    "t_hi": 0.995,
+    "min_area": 0,
+    "min_meanp": 0.85
+   },
+   "oof": {
+    "nested_cv_pq": 0.4461075477773861,
+    "pq_at_keep_rule": 0.4468841044017602,
+    "sum_iou": 3533.5126135047176,
+    "tp": 5165,
+    "fp": 2450,
+    "fn": 3034,
+    "n_pred": 4641,
+    "pred_per_image": 6.564356435643564,
+    "per_fold_pq": {
+     "0": 0.4521277711945422,
+     "1": 0.43609714979771186,
+     "2": 0.44642775776015614,
+     "3": 0.4538124726626561,
+     "4": 0.4454011601955428
+    }
+   },
+   "submission_file": {
+    "sha256": "45abec3ea5fe6188fb826a9fd38aa5beabb851ff915648a1394b6460f2bb4c00",
+    "rows": 1122,
+    "images_with_rows": 176,
+    "bytes": 306300
+   },
+   "submission_id": 57229771,
+   "date_utc": "2026-10-15 12:12",
+   "public_lb": 0.39,
+   "environment": {
+    "python": "3.13.15",
+    "torch": "2.11.0+cu128",
+    "timm": "1.0.29",
+    "segmentation_models_pytorch": "0.5.0"
+   }
+  },
+  "v6": {
+   "kernel": "dariushafshar/solar-filament-unet-baseline (private) version 6",
+   "models": "all 10 (v3 + v5 fold models averaged; this dataset)",
+   "keep_rule": {
+    "t_lo": 0.35,
+    "t_hi": 0.99,
+    "min_area": 200,
+    "min_meanp": 0.85
+   },
+   "oof": {
+    "nested_cv_pq": 0.45016313656851364,
+    "pq_at_keep_rule": 0.45232053645700204,
+    "sum_iou": 3644.120401965837,
+    "tp": 5318,
+    "fp": 2596,
+    "fn": 2881,
+    "n_pred": 4845,
+    "pred_per_image": 6.852899575671853,
+    "per_fold_pq": {
+     "0": 0.45224592336716496,
+     "1": 0.4413412602608605,
+     "2": 0.45804964662411857,
+     "3": 0.46037259949471104,
+     "4": 0.4495029211502553
+    }
+   },
+   "submission_file": {
+    "sha256": "eb87c29dfb233d3d60ae24d805096f59f5d63995949ce63880c426beeeddea47",
+    "rows": 1177,
+    "images_with_rows": 177,
+    "bytes": 319073
+   },
+   "submission_id": 57275747,
+   "date_utc": "2026-10-16 16:27",
+   "public_lb": 0.39,
+   "environment": {
+    "python": "3.13.15",
+    "torch": "2.11.0+cu128",
+    "timm": "1.0.29",
+    "segmentation_models_pytorch": "0.5.0"
+   },
+   "learned_comparison": {
+    "note": "box rule restricted to t_lo 0.35, chosen on the other folds by PQ', same candidates and folds as the learned rule",
+    "pq_raw": 0.44870247239059896,
+    "pq_sparse": 0.3935023919088107,
+    "tp": 5060.0,
+    "fp": 2200.0,
+    "fn": 3139.0
+   }
+  },
+  "learned": {
+   "kernel": "dariushafshar/solar-filament-unet-baseline (private) version 8 (the v6 ensemble, inference only, + feature dump), then learned/apply_keep.py",
+   "models": "all 10 (v3 + v5 fold models averaged; this dataset) + the learned keep rule",
+   "keep_rule": {
+    "t_lo": 0.35,
+    "kind": "learned",
+    "features": 16
+   },
+   "oof": {
+    "nested_cv_pq": 0.45523587454861264,
+    "pq_at_keep_rule": 0.45523587454861264,
+    "sum_iou": 3511.689536267998,
+    "tp": 5121.0,
+    "fp": 2108.0,
+    "fn": 3078.0,
+    "n_pred": 4429,
+    "pred_per_image": 6.264497878359265,
+    "pq_sparse": 0.3993435265722645
+   },
+   "submission_file": {
+    "sha256": "5649227e61687f8a5b6fbaca0455a43954a1e2b196efae9c2fddbc0a2614d5c1",
+    "rows": 1147,
+    "images_with_rows": 177,
+    "bytes": 318189
+   },
+   "submission_id": 58245056,
+   "public_lb": 0.39
+  }
+ },
+ "oof_data": {
+  "images": 707,
+  "annotator_sets": 1154,
+  "gt_filaments": 8199,
+  "gt_per_set": 7.104852686308492,
+  "scorer": "pooled PQ, IoU > 0.5, every annotator-set of an image scored against all its predictions (the host's self-evaluation logic)"
+ },
+ "sparse_label_model": {
+  "r": 0.77,
+  "formula": "PQ' = r*sum_iou / (r*tp + 0.5*fp + 0.5*(1-r)*tp + 0.5*r*fn)",
+  "meaning": "each filament a training annotator would mark appears in the test labels with probability r; r fitted so that v3's OOF counts give its public 0.37"
+ },
+ "human_vs_human_pq": {
+  "value": 0.3399,
+  "images": 296,
+  "source": "dariushafshar/filament-pq-two-experts-agree-at-0-34 (Kaggle log line: all images: PQ 0.3399 (SQ 0.6337, RQ 0.5364; TP 4292, FP 3709, FN 3709))"
+ },
+ "training": {
+  "folds": "5, grouped by image (all annotator-sets of an image in one fold), stratified by the site code in the file name x number of annotator-sets, seed 42; folds.csv",
+  "target": "per image, the mean of its annotator-sets' union masks (0, 1/k, ..., 1)",
+  "encoders": {
+   "resnet34": "smp 'imagenet' weights",
+   "tu-tf_efficientnetv2_s": "timm tf_efficientnetv2_s.in21k_ft_in1k"
+  },
+  "params": {
+   "resnet34": 24430097,
+   "tu-tf_efficientnetv2_s": 22093041
+  },
+  "crop_px": 512,
+  "pos_frac": 0.7,
+  "batch": 16,
+  "steps_per_fold": 10500,
+  "lr": 0.0003,
+  "weight_decay": 0.0001,
+  "warmup_steps": 300,
+  "schedule": "linear warmup then cosine to 1% of lr",
+  "loss": "BCE on the soft target + soft Dice",
+  "optimiser": "AdamW",
+  "amp": "float16",
+  "augmentation": "rot90 + flips; gamma 0.8-1.25 and contrast/brightness jitter",
+  "efficientnetv2_s_batch": "16 as 2 accumulated micro-batches of 8",
+  "hardware": "Kaggle T4 x 2"
+ },
+ "files_not_included": "no competition images, masks, polygons or per-image label counts",
+ "generated_utc": "2026-10-17 16:53:50",
+ "learned_keep_rule": {
+  "what": "Lever A (2026-11-11): a gradient-boosted regressor (scikit-learn HistGradientBoostingRegressor, max_depth 3, lr 0.05, 200 iterations, min_samples_leaf 40, l2 1.0, random_state 7) on 16 per-candidate features predicts the expected matched IoU per annotator-set; a candidate is kept when the prediction exceeds the threshold. Nested by fold on PQ'.",
+  "features": [
+   "area",
+   "meanp",
+   "pmax",
+   "p10",
+   "p50",
+   "bbox_h",
+   "bbox_w",
+   "extent",
+   "major",
+   "minor",
+   "perim_ratio",
+   "contrast",
+   "inside_z",
+   "radius",
+   "cx",
+   "cy"
+  ],
+  "t_lo": 0.35,
+  "candidate_floor": 0.4,
+  "threshold": 0.26,
+  "n_train_candidates": 8211,
+  "oof_kept_share": 0.5393983680428693,
+  "oof_rows_per_image": 6.264497878359265,
+  "delta_sd": 0.001383648299182941,
+  "delta_ci": [
+   0.0031377456618915515,
+   0.008547878414217076
+  ],
+  "per_fold_delta": [
+   0.006745255393778571,
+   0.004461422862571118,
+   0.007437758797011196,
+   0.007435949345874715,
+   0.0029767575147810477
+  ]
+ }
+}

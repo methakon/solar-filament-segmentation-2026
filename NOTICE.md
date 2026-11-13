@@ -34,3 +34,13 @@ augmentation protocol, the four-parameter mask rule and the 33,880-point search 
 out-of-fold-to-public calibration and noise-floor analysis, and the accompanying text.
 
 If you reuse any of the above, cite this repository and the upstream components listed here.
+
+## Third-party model weights
+
+`weights/` holds ten U-Net fold checkpoints (five ResNet34, five EfficientNetV2-S encoders)
+published by Kaggle user **dariushafshar** as the public dataset
+`solar-filament-unet-weights`, together with that dataset's receipt, out-of-fold keep-rule grid
+and folds table. They are redistributed here unmodified so this repository reproduces the
+submitted predictions on its own; each file's sha256 is verified against
+`weights/solar_unet_receipt.json` before use. Trained on the competition's 707 labelled training
+images only.
