@@ -18,7 +18,10 @@ The full write-up is in [REPORT.md](REPORT.md). The short version:
 ## Layout
 
 ```
-REPORT.md                                      technical report (4 pages)
+REPORT.md                                      technical report, markdown source
+report.pdf                                     technical report, 4 pages A4 (the deliverable)
+report.html                                    intermediate render
+tools/md_to_html.py                            renders REPORT.md -> PDF (via libreoffice)
 requirements.txt                               pinned dependencies
 NOTICE.md                                      third-party attribution
 pipeline/
