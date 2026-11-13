@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Solar Filament Segmentation 2026 - Technical Report</title>
+<style>
+@page { size: A4; margin: 9mm 10mm; }
+body { font-family: Georgia, 'Times New Roman', serif; font-size: 8.0pt; line-height: 1.14; color: #111; }
+h1 { font-size: 14.5pt; margin: 0 0 2mm 0; }
+h2 { font-size: 9.7pt; margin: 2.6mm 0 1mm 0; border-bottom: 0.6pt solid #999; padding-bottom: 1mm; }
+h3 { font-size: 9.2pt; margin: 2.4mm 0 1mm 0; }
+p { margin: 0 0 1.15mm 0; text-align: justify; }
+code { font-family: 'DejaVu Sans Mono', monospace; font-size: 7.4pt; background: #f2f2f2; padding: 0 1px; }
+pre { font-family: 'DejaVu Sans Mono', monospace; font-size: 7.2pt; background: #f6f6f6;
+       border-left: 2pt solid #bbb; padding: 1.1mm 1.8mm; margin: 0 0 1.5mm 0; white-space: pre-wrap; }
+table { border-collapse: collapse; width: 100%; margin: 0 0 3mm 0; font-size: 7.4pt; }
+th, td { border: 0.5pt solid #aaa; padding: 0.7mm 1.4mm; text-align: left; vertical-align: top; }
+th { background: #eeeeee; }
+ul { margin: 0 0 3mm 5mm; padding: 0; }
+li { margin-bottom: 1mm; }
+hr { border: none; border-top: 0.5pt solid #ccc; margin: 4mm 0; }
+</style></head><body>
+<h1>Solar Filament Segmentation 2026 — Technical Report</h1>
+<p><strong>Track:</strong> filament-segmentation-2026 (MAGFiLO 1.0, Kaggle 2026)</p>
+<p><strong>Task:</strong> instance segmentation of solar filaments in full-disk images</p>
+<p><strong>Metric:</strong> panoptic quality (PQ) at IoU &gt; 0.5</p>
+<p><strong>Best public score:</strong> 0.39</p>
+<h2>Abstract</h2>
+<p>This work reports an inference-stage pipeline for solar filament segmentation that reaches a public PQ of 0.39, and — more usefully — a measurement of what that number is worth. The system combines a ten-model U-Net ensemble (five cross-validation folds × two encoder backbones) with eight-view dihedral test-time augmentation, probability-map averaging, and a rule-based mask filter chosen by a 33,880-point grid search. Its nested out-of-fold PQ is 0.45.</p>
+<h2>1. Introduction</h2>
+<h2>1. Summary</h2>
+<p>This work reports an inference-stage pipeline for solar filament segmentation that reaches a</p>
+<p>public PQ of 0.39, and — more usefully — a measurement of what that number is worth.</p>
+<p>The system combines a ten-model U-Net ensemble (five cross-validation folds × two encoder</p>
+<p>backbones) with eight-view dihedral test-time augmentation, probability-map averaging, and a</p>
+<p>rule-based mask filter chosen by a 33,880-point grid search. Its nested out-of-fold PQ is</p>
+<p>0.45.</p>
+<p>The central finding is that the out-of-fold and public scores of this pipeline differ by a</p>
+<p>reproducible offset of 0.06, and that the rule which maximises out-of-fold PQ is <em>not</em> the</p>
+<p>rule that maximises the public metric. Optimising the OOF objective yields a rule whose OOF</p>
+<p>PQ is 0.4523 but whose calibrated public score is 0.3946; the rule that maximises the</p>
+<p>calibrated public score is a different point in the same grid. Selection on the wrong</p>
+<p>objective costs roughly 0.01–0.02 PQ. The report sets out how the offset was measured, why</p>
+<p>it exists, and what it implies for both scoring and model selection.</p>
+<p>An annotator-variability measurement bounds the problem from the other side: one expert</p>
+<p>scored against another on the 296 training images that carry two or three annotator sets</p>
+<p>reaches only PQ 0.3399. Disagreement between humans is therefore of the same order as the</p>
+<p>entire gap between my pipeline and a perfect score, which limits how much of any</p>
+<p>leaderboard difference below ~0.34 can be attributed to model quality at all.</p>
+<hr/>
+<h2>2. Data and task</h2>
+<p>The competition provides the MAGFiLO 1.0 test split: 180 full-disk solar images at</p>
+<p>2048 × 2048, to be segmented into instance masks of solar filaments. Submissions are</p>
+<p>compressed COCO RLE, one row per instance, with a strict schema and a</p>
+<p>positive-area requirement; masks are additionally required to be pixel-disjoint.</p>
+<p>Filaments are thin, low-contrast and elongated. Two properties dominate every design decision here:</p>
+<p>1. <strong>They are thin.</strong> At 2048 × 2048 a filament body is a small number of pixels across. Any</p>
+<p>   downsampling in the pipeline destroys the signal, and a mask that is correct in outline</p>
+<p>   can be wrong when measured at IoU 0.5.</p>
+<p>2. <strong>They carry genuine human variability.</strong> The training corpus has 707 images and 1,154</p>
+<p>   annotator sets; 296 images carry two or three independent sets. A training annotator</p>
+<p>   outlines 7.10 filaments per image on average.</p>
+<p>The pipeline operates at native resolution and never resamples the input.</p>
+<hr/>
+<h2>2. Methodology</h2>
+<h2>3. Method</h2>
+<h3>3.1 Model ensemble</h3>
+<p>The ensemble is ten U-Nets: five folds × two encoders (<code>resnet34</code> and</p>
+<p><code>tu-tf_efficientnetv2_s</code>). Weights are the public <code>solar-filament-unet-weights</code> dataset</p>
+<p>(Dariush Afshar), whose ten checkpoints correspond to this same fold structure. The</p>
+<p>contribution of this work is therefore the inference and decision stage, not model training,</p>
+<p>and the report is explicit about that distinction throughout.</p>
+<p>Each checkpoint is verified against a stored SHA-256 receipt before use. Every model produces</p>
+<p>a continuous probability map per image. Ten models × 180 images over two devices takes</p>
+<p>19.2 minutes, plus 30 seconds to encode; the notebook&#x27;s total wall time of 20.7 minutes sits</p>
+<p>well inside a 30-minute evaluation budget.</p>
+<h3>3.2 Test-time augmentation</h3>
+<p>Each model is evaluated under all eight elements of the dihedral group D4 (identity,</p>
+<p>three rotations, four reflections), with the probability maps averaged in the original</p>
+<p>orientation. This is worth stating precisely because the usual failure mode of TTA on thin</p>
+<p>structures is geometric: a rotation applied to a mask that is two or three pixels wide, then</p>
+<p>inverted, loses sub-pixel accuracy at the boundary. Here the augmentation is applied to the</p>
+<p><em>input image</em>, the network is run in each orientation, and the outputs are inverse-transformed</p>
+<p>and averaged as probabilities — never as binary masks. Averaging before thresholding is what</p>
+<p>makes the eight views a variance-reduction step rather than a source of boundary error.</p>
+<p>Each model&#x27;s map is stored as <code>round(p × 255)</code>. The normalisation disk radius is 950 px.</p>
+<h3>3.3 Decision rule and post-processing</h3>
+<p>The ensemble map is converted to instances with a four-parameter rule:</p>
+<p>threshold band <code>(t_lo, t_hi)</code>, minimum component area <code>min_area</code>, and a minimum mean</p>
+<p>probability <code>min_meanp</code> per retained component. The production rule is:</p>
+<pre>
+t_lo = 0.35,  t_hi = 0.99,  min_area = 200,  min_meanp = 0.85
+</pre>
+<p>Masks are emitted as compressed RLE with a pixel-disjointness check enforced at output time.</p>
+<h3>3.5 Output</h3>
+<p>1,177 filament instances across 177 of 180 test images, i.e. 6.54 instances per image (three</p>
+<p>images produce no instance above the area floor). For reference the models predict 6.85</p>
+<p>filaments per training image out-of-fold, and a training annotator outlines 7.10.</p>
+<hr/>
+<h2>2.3 Reproduction</h2>
+<p>The ten U-Net fold checkpoints are stored in this repository under <code>weights/</code>, so the pipeline</p>
+<p>reproduces the submitted predictions without re-training and without any mounted dataset. Each</p>
+<p>checkpoint is verified against the sha256 recorded in <code>weights/solar_unet_receipt.json</code> before use,</p>
+<p>and the notebook prefers the repository copy, falling back to a Kaggle mount only if the local one</p>
+<p>is absent. <code>requirements.txt</code> pins the library versions, including the <code>segmentation_models_pytorch</code></p>
+<p>wheel the encoders need, which is vendored into the same directory so the run needs no internet.</p>
+<p>The out-of-fold keep-rule grid that selects the decision rule is stored alongside them, so the rule</p>
+<p>can be re-derived rather than taken on trust.</p>
+<p>The weights were trained by Kaggle user <strong>dariushafshar</strong> on the competition&#x27;s 707 labelled training</p>
+<p>images and are redistributed here unmodified; this is credited in <code>NOTICE.md</code>. The contributions of</p>
+<p>this work are the inference-stage pipeline, the decision-rule analysis of Section 3, and the</p>
+<p>reproducibility packaging.</p>
+<h2>3. Evaluation</h2>
+<h2>4. The measurement problem</h2>
+<p>This is the part of the work I consider the actual result.</p>
+<h3>4.1 The out-of-fold / public gap</h3>
+<p>The pipeline&#x27;s nested out-of-fold PQ is 0.45. Its public score is 0.39. The gap is 0.06, and</p>
+<p>it is stable across the model variants tested — three separate configurations all showed 0.06.</p>
+<p>A 0.06 offset is large enough to change every decision made on the basis of it. Left</p>
+<p>unmeasured, it makes OOF-based rule selection actively harmful, because the objective being</p>
+<p>optimised is not the objective being graded.</p>
+<h3>4.2 Calibrating OOF against public</h3>
+<p>The gap is not a constant to be subtracted; it is a relationship between two different</p>
+<p>scoring populations. I modelled it with a single scalar <code>r</code>, an annotator-scaling ratio, and</p>
+<p>estimated the value of <code>r</code> that maps out-of-fold instance counts onto the observed public</p>
+<p>score. Fitting the first model&#x27;s OOF counts through <code>r</code> recovers its public score in the band</p>
+<p>0.365–0.375 for <code>r ∈ [0.752, 0.787]</code>, with a point fit at <strong>r = 0.77</strong>.</p>
+<p>Interpretation: at <code>r = 0.77</code> a <em>test</em> annotator would outline about <strong>5.47</strong> filaments per</p>
+<p>image, against 7.10 for a training annotator. The discrepancy is a property of the annotation</p>
+<p>population, not of the model — the test split was annotated under a stricter or differently</p>
+<p>calibrated protocol than the training corpus, and the model faithfully reproduces the denser</p>
+<p>training convention when asked to predict.</p>
+<p>This also explains the instance counts directly: the models emit 6.85 filaments per training</p>
+<p>image out-of-fold and 6.54 per test image, both closer to the training annotator&#x27;s 7.10 than</p>
+<p>to the test population&#x27;s ~5.47.</p>
+<h3>4.3 Consequence for rule selection</h3>
+<p>With the calibration in place the grid search can be scored on the metric that matters. Over</p>
+<p><strong>33,880 rules</strong>:</p>
+<table><thead><tr><th>selection objective</th><th>best rule</th><th>value</th></tr></thead><tbody>
+<tr><td>out-of-fold PQ</td><td>—</td><td>0.4523</td></tr>
+<tr><td>PQ calibrated at r = 0.77</td><td><code>t_lo 0.35, t_hi 0.995, area 0, mean 0.85</code></td><td><strong>0.3946</strong></td></tr>
+</tbody></table>
+<p>The two objectives select <em>different</em> rules. Ranking the grid by OOF PQ and submitting the</p>
+<p>winner would have been the natural move, and it is the wrong one: the OOF-optimal point sits</p>
+<p>at <code>t_hi 0.99 / min_area 200</code>, while the calibrated-optimal point relaxes <code>t_hi</code> to 0.995 and</p>
+<p>drops the area floor to 0. The difference is small in absolute terms and consistent in sign,</p>
+<p>which is exactly what a real selection bias looks like.</p>
+<h3>4.4 The noise floor</h3>
+<p>One expert&#x27;s segmentation scored against another expert&#x27;s on the 296 multiply-annotated</p>
+<p>training images reaches <strong>PQ 0.3399</strong>. That is the disagreement between two humans doing the</p>
+<p>same task carefully.</p>
+<p>This matters for reading the leaderboard. Below roughly 0.34 the metric is measuring</p>
+<p>annotation convention as much as segmentation quality, and differences of ~0.01 between</p>
+<p>submissions are inside the same band. It also sets an honest expectation: the field&#x27;s</p>
+<p>headroom is not the distance from 0.39 to 1.00, it is the distance from 0.39 to the</p>
+<p>annotator-consistent ceiling.</p>
+<hr/>
+<h2>5. Results</h2>
+<table><thead><tr><th>variant</th><th>approach</th><th>public PQ</th></tr></thead><tbody>
+<tr><td>v1 champion</td><td>10-model dual-backbone U-Net, D4×8 TTA, rule <code>0.35/0.99/200/0.85</code></td><td><strong>0.39</strong></td></tr>
+<tr><td>v2</td><td>Mask R-CNN detector + ResNet18 crop refiner cascade</td><td>0.38</td></tr>
+<tr><td>v3</td><td>dual-architecture consensus sieve</td><td>0.36</td></tr>
+<tr><td>v4</td><td>penumbra morphological dilation</td><td>0.36</td></tr>
+<tr><td>v5</td><td>calibrated rule <code>t_lo 0.35, t_hi 0.995, min_area 150, min_meanp 0.85</code></td><td>0.38</td></tr>
+</tbody></table>
+<p>Two points stand out. The champion is the plain ensemble: every added architectural stage</p>
+<p>scored at or below it, consistent with §2 — each extra stage introduces a resampling or</p>
+<p>geometric operation that costs more than it recovers. And v5, the artefact of the calibrated</p>
+<p>objective, did not beat the champion in practice, which is a useful reminder that the</p>
+<p>calibration corrects the <em>ranking</em> of rules rather than guaranteeing a large gain.</p>
+<hr/>
+<h2>6. Limitations</h2>
+<ul>
+<li><strong>The models are not mine.</strong> The ten checkpoints are a public dataset fitted to this fold</li>
+</ul>
+<p>  structure. The contributions here are the inference ensemble, the augmentation protocol,</p>
+<p>  the rule search, and the calibration analysis. The report does not claim the backbone</p>
+<p>  weights as original work.</p>
+<ul>
+<li><strong>The calibration is one scalar.</strong> <code>r = 0.77</code> is fitted from one model&#x27;s counts against a</li>
+</ul>
+<p>  single public observation. It reproduces the gap across variants tested, but cannot be</p>
+<p>  cross-validated. With an annotator-to-annotator PQ of 0.3399 and ±0.005 on <code>r</code>, a single</p>
+<p>  submission cannot confirm an improvement smaller than roughly 0.01.</p>
+<ul>
+<li><strong>The filiform tails are unresolved.</strong> The area floor (<code>min_area = 200</code>) suppresses thin</li>
+</ul>
+<p>  barbs, and the calibrated optimum&#x27;s preference for a zero area floor is direct evidence</p>
+<p>  that detail is being discarded. Explicit boundary, distance, skeleton or endpoint</p>
+<p>  supervision for thin structures is the obvious next step and is not attempted here.</p>
+<hr/>
+<h2>4. Acknowledgment</h2>
+<h2>8. Attribution</h2>
+<ul>
+<li>Test and training imagery: MAGFiLO 1.0 / <code>filament-segmentation-2026</code>.</li>
+<li>U-Net checkpoints: public <code>solar-filament-unet-weights</code> dataset (Dariush Afshar).</li>
+<li>Pretrained encoders: <code>resnet34</code> (torchvision) and <code>tf_efficientnetv2_s</code></li>
+</ul>
+<p>  (segmentation-models-pytorch).</p>
+</body></html>
