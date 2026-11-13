@@ -41,18 +41,16 @@ The competition provides the MAGFiLO 1.0 test split: 180 full-disk solar images 
 compressed COCO RLE, one row per instance, with a strict schema and a
 positive-area requirement; masks are additionally required to be pixel-disjoint.
 
-Filaments are thin, low-contrast, elongated structures. Two properties of the data dominate
-every design decision in this report:
+Filaments are thin, low-contrast and elongated. Two properties dominate every design decision here:
 
 1. **They are thin.** At 2048 × 2048 a filament body is a small number of pixels across. Any
    downsampling in the pipeline destroys the signal, and a mask that is correct in outline
    can be wrong when measured at IoU 0.5.
-2. **They are annotated with genuine human variability.** The training corpus contains 707
-   images and 1,154 annotator sets; 296 images carry two or three independent annotator
-   sets. The relevant statistic is that a training annotator outlines 7.10 filaments per
-   image on average.
+2. **They carry genuine human variability.** The training corpus has 707 images and 1,154
+   annotator sets; 296 images carry two or three independent sets. A training annotator
+   outlines 7.10 filaments per image on average.
 
-The pipelines in this work operate at native resolution and never resample the input.
+The pipeline operates at native resolution and never resamples the input.
 
 ---
 
@@ -67,7 +65,9 @@ contribution of this work is therefore the inference and decision stage, not mod
 and the report is explicit about that distinction throughout.
 
 Each checkpoint is verified against a stored SHA-256 receipt before use. Every model produces
-a continuous probability map per image.
+a continuous probability map per image. Ten models × 180 images over two devices takes
+19.2 minutes, plus 30 seconds to encode; the notebook's total wall time of 20.7 minutes sits
+well inside a 30-minute evaluation budget.
 
 ### 3.2 Test-time augmentation
 
@@ -93,13 +93,6 @@ t_lo = 0.35,  t_hi = 0.99,  min_area = 200,  min_meanp = 0.85
 ```
 
 Masks are emitted as compressed RLE with a pixel-disjointness check enforced at output time.
-
-### 3.4 Runtime
-
-Ten models × 180 images over two devices: 19.2 minutes. Submission encoding: 30 seconds.
-Total notebook wall time: 20.7 minutes — comfortably inside a 30-minute evaluation budget,
-which is what makes this pipeline usable as a final submission rather than only as an
-experiment.
 
 ### 3.5 Output
 
@@ -180,14 +173,11 @@ annotator-consistent ceiling.
 | v4 | penumbra morphological dilation | 0.36 |
 | v5 | calibrated rule `t_lo 0.35, t_hi 0.995, min_area 150, min_meanp 0.85` | 0.38 |
 
-Two things are worth extracting from this table. First, the champion is the plain ensemble —
-every added architectural stage (detector cascade, consensus sieve, dilation) scored at or
-below it, which is consistent with the thin-structure argument in §2: each added component
-introduces a resampling or a geometric operation that costs more than it recovers. Second,
-v5 is the calibration artefact: it is the rule chosen by the *calibrated* objective on a
-different grid than the champion's, and it did not beat the champion in practice — a
-reminder that the calibration corrects the *ranking* of rules, and does not guarantee that
-the calibrated optimum is a large improvement.
+Two points stand out. The champion is the plain ensemble: every added architectural stage
+scored at or below it, consistent with §2 — each extra stage introduces a resampling or
+geometric operation that costs more than it recovers. And v5, the artefact of the calibrated
+objective, did not beat the champion in practice, which is a useful reminder that the
+calibration corrects the *ranking* of rules rather than guaranteeing a large gain.
 
 ---
 
@@ -197,13 +187,10 @@ the calibrated optimum is a large improvement.
   structure. The contributions here are the inference ensemble, the augmentation protocol,
   the rule search, and the calibration analysis. The report does not claim the backbone
   weights as original work.
-- **The calibration is a single scalar.** `r = 0.77` is fitted from one model's counts against
-  one public observation. It reproduces the gap across the variants tested, but with one
-  public observation per variant the estimate cannot be cross-validated on held-out
-  submissions.
-- **Small leaderboard differences are not resolvable here.** With an annotator-to-annotator
-  PQ of 0.3399 and a fit uncertainty of ±0.005 on `r`, a single submission cannot confirm an
-  improvement smaller than roughly 0.01.
+- **The calibration is one scalar.** `r = 0.77` is fitted from one model's counts against a
+  single public observation. It reproduces the gap across variants tested, but cannot be
+  cross-validated. With an annotator-to-annotator PQ of 0.3399 and ±0.005 on `r`, a single
+  submission cannot confirm an improvement smaller than roughly 0.01.
 - **The filiform tails are unresolved.** The area floor (`min_area = 200`) suppresses thin
   barbs, and the calibrated optimum's preference for a zero area floor is direct evidence
   that detail is being discarded. Explicit boundary, distance, skeleton or endpoint
